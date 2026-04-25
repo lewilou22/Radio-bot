@@ -1,0 +1,209 @@
+[
+  {
+    "name": "Q107",
+    "url": "https://live.leanstream.co/CILQFM",
+    "live_terms": [
+      "caller",
+      "contest",
+      "prize",
+      "vault",
+      "text"
+    ],
+    "dev_terms": [],
+    "chunk_time_seconds": 10,
+    "fuzzy_max_distance": 0,
+    "enabled": true,
+    "discord_webhook_url": "",
+    "discord_username": "Q107 Contest Bot",
+    "discord_mention": "@here",
+    "station_timezone": "America/Toronto",
+    "call_in_number": "",
+    "call_in_page_url": "https://q107.com"
+  },
+  {
+    "name": "99.9",
+    "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/CKFMFM.mp3",
+    "live_terms": [
+      "contest",
+      "winning word",
+      "caller number",
+      "keyword"
+    ],
+    "dev_terms": [
+      "tyler"
+    ],
+    "chunk_time_seconds": 10,
+    "fuzzy_max_distance": 0,
+    "enabled": true,
+    "discord_webhook_url": "",
+    "discord_username": "99.9 Contest Bot",
+    "discord_mention": "",
+    "station_timezone": "America/Toronto",
+    "call_in_number": "",
+    "call_in_page_url": ""
+  },
+  {
+    "name": "1021 THE EDGE",
+    "url": "https://geocom.leanstream.co/CFNYFM-MP3-2",
+    "live_terms": [
+      "text in",
+      "contest",
+      "winning word",
+      "caller number",
+      "keyword"
+    ],
+    "dev_terms": [],
+    "chunk_time_seconds": 10,
+    "fuzzy_max_distance": 0,
+    "enabled": true,
+    "discord_webhook_url": "",
+    "discord_username": "1021 the edge",
+    "discord_mention": "",
+    "station_timezone": "America/Toronto",
+    "call_in_number": "",
+    "call_in_page_url": "https://edge.ca"
+  },
+  {
+    "name": "97.3 BOOM",
+    "url": "https://nyc-edge1-entry1.leanstream-hd.com:2112/CHBMFM-MP3-2",
+    "live_terms": [
+      "call boom",
+      "contest",
+      "winning word",
+      "caller number",
+      "keyword",
+      "keswick"
+    ],
+    "dev_terms": [],
+    "chunk_time_seconds": 10,
+    "fuzzy_max_distance": 0,
+    "enabled": true,
+    "discord_webhook_url": "",
+    "discord_username": "1021 the edge",
+    "discord_mention": "",
+    "station_timezone": "America/Toronto",
+    "call_in_number": "",
+    "call_in_page_url": ""
+  },
+  {
+    "name": "Rock 95",
+    "url": "https://nyc-edge1-entry1.leanstream-hd.com:2112/CFJBFM-MP3",
+    "live_terms": [
+      "caller",
+      "text"
+    ],
+    "dev_terms": [],
+    "chunk_time_seconds": 10,
+    "fuzzy_max_distance": 0,
+    "enabled": true,
+    "discord_webhook_url": "",
+    "discord_username": "Radio Keyword Bot",
+    "discord_mention": "",
+    "station_timezone": "America/Toronto",
+    "call_in_number": "",
+    "call_in_page_url": ""
+  },
+  {
+    "name": "Indie 88",
+    "url": "https://localradio.streamb.live/SB00348",
+    "live_terms": [
+      "call boom",
+      "contest",
+      "winning word",
+      "caller number",
+      "keyword",
+      "keswick"
+    ],
+    "dev_terms": [],
+    "chunk_time_seconds": 10,
+    "fuzzy_max_distance": 0,
+    "enabled": true,
+    "discord_webhook_url": "",
+    "discord_username": "1021 the edge",
+    "discord_mention": "",
+    "station_timezone": "America/Toronto",
+    "call_in_number": "",
+    "call_in_page_url": ""
+  },
+  {
+    "name": "Newstalk 1010",
+    "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/CFRBAM.mp3",
+    "live_terms": [
+      "caller",
+      "text"
+    ],
+    "dev_terms": [],
+    "chunk_time_seconds": 10,
+    "fuzzy_max_distance": 0,
+    "enabled": true,
+    "discord_webhook_url": "",
+    "discord_username": "Radio Keyword Bot",
+    "discord_mention": "",
+    "station_timezone": "America/Toronto",
+    "call_in_number": "",
+    "call_in_page_url": ""
+  },
+  {
+    "name": "CHUM 104.5",
+    "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/CHUMFM.mp3",
+    "live_terms": [
+      "caller",
+      "contest",
+      "prize",
+      "vault",
+      "text"
+    ],
+    "dev_terms": [],
+    "chunk_time_seconds": 10,
+    "fuzzy_max_distance": 0,
+    "enabled": true,
+    "discord_webhook_url": "",
+    "discord_username": "Q107 Contest Bot",
+    "discord_mention": "@here",
+    "station_timezone": "America/Toronto",
+    "call_in_number": "",
+    "call_in_page_url": ""
+  },
+  {
+    "name": "TSN Radio 1050",
+    "url": "https://playerservices.streamtheworld.com/api/livestream-redirect/CHUMAM.mp3",
+    "live_terms": [
+      "caller",
+      "contest",
+      "prize",
+      "vault",
+      "text"
+    ],
+    "dev_terms": [],
+    "chunk_time_seconds": 10,
+    "fuzzy_max_distance": 0,
+    "enabled": true,
+    "discord_webhook_url": "",
+    "discord_username": "Q107 Contest Bot",
+    "discord_mention": "@here",
+    "station_timezone": "America/Toronto",
+    "call_in_number": "",
+    "call_in_page_url": ""
+  },
+  {
+    "name": "Kiss 92.5",
+    "url": "https://rogers-hls.leanstream.co/rogers/tor925.stream/icy",
+    "live_terms": [
+      "caller",
+      "contest",
+      "prize",
+      "vault",
+      "text"
+    ],
+    "dev_terms": [],
+    "chunk_time_seconds": 10,
+    "fuzzy_max_distance": 0,
+    "enabled": true,
+    "discord_webhook_url": "",
+    "discord_username": "Q107 Contest Bot",
+    "discord_mention": "@here",
+    "station_timezone": "America/Toronto",
+    "call_in_number": "",
+    "call_in_page_url": ""
+  }
+]
