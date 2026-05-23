@@ -90,7 +90,7 @@ def setup_log() -> logging.Logger:
     return logger
 
 
-# Words of transcript around a keyword match (blacklist + Discord + alert snippet).
+# Words of transcript around a keyword match (Discord + alert snippet).
 KEYWORD_CONTEXT_WORDS_EACH_SIDE = 40
 # Short first chunks (or sparse speech): buffer transcripts until keyword scan has enough text.
 MIN_TRANSCRIPT_WORDS_BEFORE_KEYWORD_SCAN = 20
@@ -1445,18 +1445,6 @@ def keyword_match_spans(text: str, term: str, fuzzy_max_distance: int) -> list[t
     return out
 
 
-def context_contains_blacklist(context: str, blacklist: list[str], fuzzy_max_distance: int) -> bool:
-    if not blacklist or not context:
-        return False
-    for phrase in blacklist:
-        if fuzzy_max_distance == 0:
-            if exact_match_spans(context, phrase):
-                return True
-        elif find_near_matches(phrase, context.lower(), max_l_dist=fuzzy_max_distance):
-            return True
-    return False
-
-
 def non_overlapping_spans(text: str, term: str, fuzzy_max_distance: int) -> list[tuple[int, int]]:
     """Character spans for highlighting / Discord formatting."""
     return keyword_match_spans(text, term, fuzzy_max_distance)
@@ -1564,7 +1552,6 @@ class TranscriptionWorker(threading.Thread):
         log: logging.Logger,
         alert_cache: dict[tuple[str, str], float],
         alert_lock: threading.Lock,
-        get_global_blacklist: Callable[[], list[str]],
         merge_state: TranscriptMergeState,
         get_contest_ai_enabled: Callable[[], bool],
         shared_transcriber: Transcriber | None = None,
@@ -1577,7 +1564,6 @@ class TranscriptionWorker(threading.Thread):
         self.log = log
         self.alert_cache = alert_cache
         self.alert_lock = alert_lock
-        self._get_global_blacklist = get_global_blacklist
         self.merge_state = merge_state
         self._get_contest_ai_enabled = get_contest_ai_enabled
         self._shared = shared_transcriber
@@ -1646,9 +1632,7 @@ class TranscriptionWorker(threading.Thread):
         keyword_word = words_with_pos[keyword_word_idx][0]
         return context, keyword_word
 
-    def _find_matches(
-        self, station: StationConfig, text: str, global_blacklist: list[str]
-    ) -> list[MatchEvent]:
+    def _find_matches(self, station: StationConfig, text: str) -> list[MatchEvent]:
         if not text.strip():
             return []
         events: list[MatchEvent] = []
@@ -1658,8 +1642,6 @@ class TranscriptionWorker(threading.Thread):
                 continue
             start_idx, end_idx = spans[0]
             context, _ = self._extract_context_window(text, start_idx, end_idx)
-            if context_contains_blacklist(context, global_blacklist, station.fuzzy_max_distance):
-                continue
             events.append(
                 MatchEvent(
                     station.name,
@@ -1675,8 +1657,6 @@ class TranscriptionWorker(threading.Thread):
                 continue
             start_idx, end_idx = spans[0]
             context, _ = self._extract_context_window(text, start_idx, end_idx)
-            if context_contains_blacklist(context, global_blacklist, station.fuzzy_max_distance):
-                continue
             events.append(
                 MatchEvent(
                     station.name,
@@ -1717,7 +1697,6 @@ class TranscriptionWorker(threading.Thread):
 
             try:
                 station = fresh_station_config(station)
-                blacklist = self._get_global_blacklist()
                 impl = self._shared if self._shared is not None else self._local
                 assert impl is not None
                 whisper_text = impl.transcribe_path(str(file_path))
@@ -1742,7 +1721,7 @@ class TranscriptionWorker(threading.Thread):
                 text_for_keywords = self.merge_state.feed(station.name, chunk_seq, whisper_text)
                 if text_for_keywords is not None:
                     match_station = fresh_station_config(station)
-                    for event in self._find_matches(match_station, text_for_keywords, blacklist):
+                    for event in self._find_matches(match_station, text_for_keywords):
                         key = (event.station, event.term)
                         now_ts = time.time()
                         send_now = False

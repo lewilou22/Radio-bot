@@ -26,7 +26,7 @@ pip install -r mobile/requirements.txt
 PYTHONPATH=. python mobile/main.py
 ```
 
-Material-style **Monitor** / **Stations** / **Settings** tabs: start/stop, transcript + alerts, station editor (with FmStream search), secrets (`secrets.json` under the app user data dir), blacklist, Groq contest-AI toggle.
+Material-style **Monitor** / **Stations** / **Settings** tabs: start/stop, transcript + alerts, station editor (with FmStream search), secrets (`secrets.json` under the app user data dir), Groq contest-AI toggle.
 
 ### Android APK (Buildozer)
 

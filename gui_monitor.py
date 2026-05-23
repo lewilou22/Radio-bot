@@ -26,9 +26,7 @@ from config import (
     OPENAI_API_KEY,
     StationConfig,
     TRANSCRIBE_WORKERS,
-    load_global_blacklist,
     load_stations,
-    save_global_blacklist,
     save_stations,
 )
 from fmstream_client import (
@@ -177,16 +175,6 @@ class RadioMonitorApp:
         right = ttk.Frame(main)
         main.add(left, weight=1)
         main.add(right, weight=2)
-
-        bl_frame = ttk.LabelFrame(left, text="Global blacklist (all stations)", padding=6)
-        bl_frame.pack(fill="x", pady=(0, 8))
-        ttk.Label(bl_frame, text="Comma-separated; suppresses alerts if any term appears in the keyword context.").pack(
-            anchor="w"
-        )
-        self.global_blacklist_entry = ttk.Entry(bl_frame)
-        self.global_blacklist_entry.pack(fill="x", pady=4)
-        ttk.Button(bl_frame, text="Save global blacklist", command=self.save_global_blacklist_clicked).pack(anchor="w")
-        self._load_global_blacklist_into_form()
 
         ai_frame = ttk.LabelFrame(
             left,
@@ -1011,15 +999,6 @@ class RadioMonitorApp:
         self._sync_stream_player()
         self.status_var.set("New station — fill the form, then Add Station")
 
-    def _load_global_blacklist_into_form(self) -> None:
-        self.global_blacklist_entry.delete(0, tk.END)
-        self.global_blacklist_entry.insert(0, ", ".join(load_global_blacklist()))
-
-    def save_global_blacklist_clicked(self) -> None:
-        terms = [x.strip().lower() for x in self.global_blacklist_entry.get().split(",") if x.strip()]
-        save_global_blacklist(terms)
-        self.status_var.set("Global blacklist saved (applies to all stations).")
-
     def _on_contest_ai_toggle(self) -> None:
         on = bool(self._contest_ai_var.get())
         self._contest_ai_enabled_shared[0] = on
@@ -1341,7 +1320,6 @@ class RadioMonitorApp:
                 log=self.log,
                 alert_cache=self.alert_cache,
                 alert_lock=self.alert_lock,
-                get_global_blacklist=load_global_blacklist,
                 merge_state=self.transcript_merge_state,
                 get_contest_ai_enabled=lambda: self._contest_ai_enabled_shared[0],
                 shared_transcriber=shared,
