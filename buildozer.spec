@@ -29,7 +29,7 @@ android.minapi = 24
 android.ndk = 25b
 android.accept_sdk_license = True
 # INTERNET only unless you add notifications / a real foreground service.
-android.permissions = INTERNET,WAKE_LOCK
+android.permissions = INTERNET,WAKE_LOCK,FOREGROUND_SERVICE,POST_NOTIFICATIONS
 android.archs = arm64-v8a
 android.enable_androidx = True
 

@@ -106,4 +106,6 @@ def make_shared_transcriber_for_backend(backend: str) -> Transcriber | None:
 
 def default_transcribe_backend() -> str:
     """TRANSCRIBE_BACKEND env: local | groq | openai | api (api = groq or openai if keys set)."""
-    return os.getenv("TRANSCRIBE_BACKEND", "local").strip().lower() or "local"
+    from config import default_transcribe_backend_name
+
+    return default_transcribe_backend_name()

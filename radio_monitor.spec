@@ -36,7 +36,6 @@ a = Analysis(
     datas=ct_datas + av_datas + fw_datas
     + [
         ("stations.json", "."),
-        ("blacklist.json", "."),
     ],
     hiddenimports=hiddenimports,
     hookspath=[],

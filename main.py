@@ -107,6 +107,9 @@ def main() -> None:
     _write_app_file("entered_main.txt", "ok\n")
 
     try:
+        from mobile.bootstrap import init_app_environment
+
+        init_app_environment()
         from mobile.main import main as run_kivy
 
         _write_app_file("import_mobile_ok.txt", "ok\n")
