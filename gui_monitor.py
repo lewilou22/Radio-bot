@@ -25,7 +25,8 @@ from config import (
     GROQ_CONTEST_MODEL,
     OPENAI_API_KEY,
     StationConfig,
-    TRANSCRIBE_WORKERS,
+    apply_secrets_to_environ,
+    ensure_app_initialized,
     load_stations,
     save_stations,
 )
@@ -62,7 +63,7 @@ from radio_engine import (
     setup_log,
     weather_symbol_for_runtime,
 )
-from transcribers import default_transcribe_backend, make_shared_transcriber_for_backend
+from monitor_controller import MonitorController
 
 
 # Station list row colours (tk)
@@ -114,16 +115,19 @@ def insert_text_with_keyword_highlights(
 
 class RadioMonitorApp:
     def __init__(self) -> None:
+        ensure_app_initialized()
+        apply_secrets_to_environ()
         self.log = setup_log()
         self.stations = load_stations()
-        self.stop_event = threading.Event()
-        self.ui_queue: Queue = Queue()
-        self.transcribe_queue: Queue = Queue()
+        self._monitor = MonitorController(log=self.log)
+        self.stop_event = self._monitor.stop_event
+        self.ui_queue = self._monitor.ui_queue
+        self.transcribe_queue = self._monitor.transcribe_queue
         self.recorders: list[StationRecorder] = []
         self.transcribers: list[TranscriptionWorker] = []
-        self.alert_cache: dict[tuple[str, str], float] = {}
-        self.alert_lock = threading.Lock()
-        self.transcript_merge_state = TranscriptMergeState()
+        self.alert_cache = self._monitor.alert_cache
+        self.alert_lock = self._monitor.alert_lock
+        self.transcript_merge_state = self._monitor.transcript_merge_state
         self.running = False
         self._monitor_prefs: dict = _load_monitor_prefs()
         self._contest_ai_enabled_shared = [bool(self._monitor_prefs.get("contest_ai_groq", False))]
@@ -1002,6 +1006,7 @@ class RadioMonitorApp:
     def _on_contest_ai_toggle(self) -> None:
         on = bool(self._contest_ai_var.get())
         self._contest_ai_enabled_shared[0] = on
+        self._monitor.set_contest_ai_enabled(on)
         self._monitor_prefs["contest_ai_groq"] = on
         _save_monitor_prefs(self._monitor_prefs)
         self.status_var.set("Groq contest scan " + ("on" if on else "off") + " (saved).")
@@ -1303,31 +1308,18 @@ class RadioMonitorApp:
         if not self.stations:
             messagebox.showerror("No stations", "Add at least one station.")
             return
-        self.stop_event.clear()
-        self.transcript_merge_state.reset()
-        self.recorders = [StationRecorder(s, self.stop_event, self.transcribe_queue, self.ui_queue, self.log) for s in self.stations]
-        for recorder in self.recorders:
-            recorder.start()
-        backend = default_transcribe_backend()
-        shared = make_shared_transcriber_for_backend(backend)
-        self.transcribers = []
-        for worker_id in range(max(1, TRANSCRIBE_WORKERS)):
-            worker = TranscriptionWorker(
-                worker_id=worker_id + 1,
-                transcribe_queue=self.transcribe_queue,
-                stop_event=self.stop_event,
-                ui_queue=self.ui_queue,
-                log=self.log,
-                alert_cache=self.alert_cache,
-                alert_lock=self.alert_lock,
-                merge_state=self.transcript_merge_state,
-                get_contest_ai_enabled=lambda: self._contest_ai_enabled_shared[0],
-                shared_transcriber=shared,
+        self._monitor.set_contest_ai_enabled(self._contest_ai_enabled_shared[0])
+        n_workers = self._monitor.start(self.stations)
+        if n_workers == 0:
+            messagebox.showerror(
+                "No active stations",
+                "Enable at least one station with a stream URL.",
             )
-            worker.start()
-            self.transcribers.append(worker)
-        self.running = True
-        self.status_var.set(f"Running ({len(self.transcribers)} workers)")
+            return
+        self.recorders = self._monitor.recorders
+        self.transcribers = self._monitor.transcribers
+        self.running = self._monitor.running
+        self.status_var.set(f"Running ({n_workers} workers)")
         if self.start_btn:
             self.start_btn.configure(state="disabled")
         if self.stop_btn:
@@ -1336,8 +1328,10 @@ class RadioMonitorApp:
     def stop(self) -> None:
         if not self.running:
             return
-        self.stop_event.set()
+        self._monitor.stop()
         self.running = False
+        self.recorders = []
+        self.transcribers = []
         self.station_runtime.clear()
         self._rebuild_station_list_entries()
         self._sync_now_playing_label()

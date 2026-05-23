@@ -14,6 +14,8 @@ pip install -r requirements.txt
 python gui_monitor.py
 ```
 
+Data files (stations, secrets, SQLite DBs) live under `./data/` by default, or set `RADIO_MONITOR_DATA_DIR`.
+
 ### Transcription backend (desktop)
 
 - **Local (default)**: `faster-whisper` — set `MODEL_SIZE`, `WHISPER_DEVICE`, etc.
@@ -26,7 +28,9 @@ pip install -r mobile/requirements.txt
 PYTHONPATH=. python mobile/main.py
 ```
 
-Material-style **Monitor** / **Stations** / **Settings** tabs: start/stop, transcript + alerts, station editor (with FmStream search), secrets (`secrets.json` under the app user data dir), Groq contest-AI toggle.
+Material-style **Monitor** / **Stations** / **Settings** tabs: start/stop, transcript + alerts, station editor (FmStream search), secrets (`secrets.json`), Groq contest-AI toggle, commercial/contest learning buttons, song history, call-in scrape/verify, weather/gas/delay status, favorite/ad auto-switch.
+
+Shared engine: `monitor_controller.py` + `radio_engine.py`. Android entry: root `main.py` → `mobile/main.py`.
 
 ### Android APK (Buildozer)
 

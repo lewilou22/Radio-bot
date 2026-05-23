@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+data/
+*.egg-info/
+.buildozer/
+bin/
+.apk
+.idea/
+.vscode/

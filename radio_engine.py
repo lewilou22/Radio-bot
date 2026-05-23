@@ -1781,5 +1781,10 @@ class TranscriptionWorker(threading.Thread):
                 except Exception:
                     pass
             finally:
+                if config.DELETE_AUDIO_CHUNKS_AFTER_TRANSCRIBE:
+                    try:
+                        Path(file_path).unlink(missing_ok=True)
+                    except OSError:
+                        pass
                 self.transcribe_queue.task_done()
         self.log.info("Transcriber worker-%s stopped", self.worker_id)
